@@ -1,25 +1,9 @@
-import mongoose from 'mongoose';
-const { Schema } = mongoose;
+const express = require('express');
+const router = express.Router();
 
-const NotesSchema = new Schema({
-  title:{
-      type:String,
-      required:true
-    },
-  description:{
-      type:String,
-      required:true,
-      unique:true
-  },
-  tag:{
-      type:String,
-      default:"General"
-  },
-  date:{
-      type:Date,
-      default:Date.now
-  }
+router.get('/', (req, res)=>{
+    
+    res.json([])
+} )
 
-});
-
-module.exports=mongoose.model('notes',NotesSchema);
+module.exports = router
