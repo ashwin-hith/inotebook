@@ -4,16 +4,17 @@ const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const fetchuser = require("../middleware/fetchuser");
 
 const JWT_SECRET="chinnu"
-// Create a User using: POST "/api/auth/createuser". No login required
+
+
+
+// ROUTE-1:-  Create a User using: POST "/api/auth/createuser". No login required
 router.post("/createuser",[
     body("name", "Please enter your name").isLength({ min: 3 }),
     body("email", "Please Enter a valid Email").isEmail(),
-    body(
-      "password",
-      "please enter the password greater than 5 characters"
-    ).isLength({ min: 5 }),
+    body("password","please enter the password greater than 5 characters").isLength({ min: 5 }),
   ],
 
   async (req, res) => {
@@ -27,10 +28,7 @@ router.post("/createuser",[
     try {
       let user = await User.findOne({ email: req.body.email });
       if (user) {
-        return res
-          .status(400)
-          .json({ error: "sorry a user with this email already exists" });
-      }
+        return res.status(400).json({ error: "sorry a user with this email already exists" });}
 
       var salt = await bcrypt.genSalt(10); //it is used to convert your password into hash inorder to protect the user databases.
       var hash = await bcrypt.hash(req.body.password, salt);
@@ -54,8 +52,8 @@ router.post("/createuser",[
       }
 
       const authtoken=jwt.sign(data,JWT_SECRET)  //this is used to provide the token based on your credentials like username and when you try to login itwill try to sync with the details stored in db and then grants us to use the app. for more details check jwt.io
-
       // res.json(user);
+      
       res.json({authtoken});
     } catch (error) {
       console.error(error.message);
@@ -65,7 +63,7 @@ router.post("/createuser",[
 );
 
 
-// Create a User using: POST "/api/auth/login". No login required
+//ROUTE-2:-   login through email and password using: POST "/api/auth/login". No login required
 router.post("/login",[
     body("email", "Please Enter a valid Email").isEmail(),
     body("password","please enter the password greater than 5 characters").exists(),
@@ -99,5 +97,19 @@ router.post("/login",[
   }
   }
 );
+
+
+//ROUTE-3:-   Fetch the details of the user by using Authentication Token using: POST "/api/auth/getuser". No login required
+router.post("/getuser",fetchuser,async (req, res) => {
+  try {
+    userId=req.user.id;
+    const user =await User.findById(userId).select("-password") // it deselects the passoword and selects all the remaining data's
+    res.send(user)
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+})
+
 
 module.exports = router;
