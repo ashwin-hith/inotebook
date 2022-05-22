@@ -12,10 +12,12 @@ function App() {
     <NoteState> {/*from context we have to use this for the main if you want to use context */}
    <Router>
    <Navbar/>
+   <div className="container">
    <Routes>
             <Route exact path="/" element={<Home/>}/>
                 <Route exact path="/about" element={<About/>}/>          
           </Routes>
+   </div>
    </Router>
    </NoteState>
    </>
