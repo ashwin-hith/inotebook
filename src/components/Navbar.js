@@ -1,14 +1,11 @@
 import React from 'react'
 import { Link,useLocation } from 'react-router-dom'
-import { useEffect } from 'react'
+
 
 
 // uselocation hook is used to get the location of the path so we are using uselocation in order to change the active class of the navbar
 const Navbar = () => {
     let location = useLocation();
-  useEffect(() => {
-    // console.log(location.pathname)
-  }, [location]);
   return (
     <div>
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark ">
