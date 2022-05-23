@@ -3,81 +3,93 @@ import NoteContext from "./noteContext";
 
 
 const NoteState=(props)=>{
-   const notesInital=[
-    {
-        "_id": "628937123dd5ae41967176389",
-        "user": "6288b611a1c823as413923ccd",
-        "title": "Python",
-        "description": "Lets learch python programming from beginning and lets Ace this programming language by studying all the topics related to the programming",
-        "tag": "this is about dabba programming",
-        "date": "2022-05-21T19:01:38.465Z",
-        "__v": 0
-      },
-      {
-        "_id": "6289cc59ea4e85efa58964fc8",
-        "user": "6288bd611a1c823a413923ccd",
-        "title": "JAVA",
-        "description": "I will teach you how to make the adriod softwares in the java programming so lets learn andriod development from scratch",
-        "tag": "you will master python once u complete this course",
-        "date": "2022-05-22T05:38:33.665Z",
-        "__v": 0
-      },
-      {
-        "_id": "6289acc59ea4e85ef58964fc8",
-        "user": "6288b611ad1c823a413923ccd",
-        "title": "C++",
-        "description": "Let's ace DATA STRUCTURES AND ALGORITHMS in C++ by end of the sem you will complete solve all the problems related to the problem solving",
-        "tag": "you will master python once u complete this course",
-        "date": "2022-05-22T05:38:33.665Z",
-        "__v": 0
-      },
-      {
-        "_id": "6289cc59eaa4e85ef58964fc8",
-        "user": "6288b611ag1c823a413923ccd",
-        "title": "Kotlin",
-        "description": "I don't know for what it is been used this programing so let's learn this programming language for the additional use.",
-        "tag": "you will master python once u complete this course",
-        "date": "2022-05-22T05:38:33.665Z",
-        "__v": 0
-      },
-      {
-        "_id": "6289cac59eaa4e85ef58964fc8",
-        "user": "6288b611av1c823a413923ccd",
-        "title": "JavaScript",
-        "description": "Let's master JavaScript and crate cool web development pages and also lets Become MERN STACK ",
-        "tag": "you will master python once u complete this course",
-        "date": "2022-05-22T05:38:33.665Z",
-        "__v": 0
-      }
-   ]
+  const host='http://localhost:5000'
+   const notesInital=[]
     const [notes, setnotes] = useState(notesInital)
     
     
+    //FetchNotess the fetch was browsed from google i.e,. fetch with header
+
+    const getNotes=async()=>{
+      const response = await fetch(`${host}/api/notes/fetchallnotes`, {
+        method: 'GET',  
+        headers: {
+          'Content-Type': 'application/json',
+          'auth-token':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjI4OGI2MTFhMWM4MjNhNDEzOTIzY2NkIn0sImlhdCI6MTY1MzEyNzU1MH0.a4ao-q4-xaaMv1PCDFGhl_X4m6DhyWA86LsgOTFoUgM'  
+        },
+    
+      });
+      const json=await response.json();
+      setnotes(json);
+    }
+    
+
+
+
+
     //AddNote
-    const addNote=(title,description,tag)=>{
-      console.log("adding a new note");
-      const note={
-        "_id": "6289cac59ea4ade85ef58964fc8",
-        "user": "6288b611av1c823a413923ccd",
-        "title": title,
-        "description": description,
-        "tag": tag,
-        "date": "2022-05-22T05:38:33.665Z",
-        "__v": 0
-      };
+
+    const addNote=async(title,description,tag)=>{
+      const response = await fetch(`${host}/api/notes/addnote`, {
+        method: 'POST',  
+        headers: {
+          'Content-Type': 'application/json',
+          'auth-token':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjI4OGI2MTFhMWM4MjNhNDEzOTIzY2NkIn0sImlhdCI6MTY1MzEyNzU1MH0.a4ao-q4-xaaMv1PCDFGhl_X4m6DhyWA86LsgOTFoUgM'  
+        },
+    
+        body: JSON.stringify({title,description,tag}) 
+      });
+      
+      const note= await response.json();
       setnotes(notes.concat(note));
     }
+
+
     //DeleteNote
-    const deleteNote=(id)=>{
-        const newNote= notes.filter((note)=>{return note._id!==id})
-        setnotes(newNote)
+    const deleteNote=async (id)=>{
+      const response = await fetch(`${host}/api/notes/deletenote/${id}`, {
+        method: 'DELETE',  
+        headers: {
+          'Content-Type': 'application/json',
+          'auth-token':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjI4OGI2MTFhMWM4MjNhNDEzOTIzY2NkIn0sImlhdCI6MTY1MzEyNzU1MH0.a4ao-q4-xaaMv1PCDFGhl_X4m6DhyWA86LsgOTFoUgM'  
+        },
+      });
+        const json=await response.json();
+        console.log(json);
+        const newNotes=notes.filter((note)=>{return note._id !== id})
+        setnotes(newNotes)
     }
+
+
+
     //EditNote
-    const editNote=()=>{}
+    const editNote=async (id,title,description,tag)=>{
+      const response = await fetch(`${host}/api/notes/updatenote/${id}`, {
+        method: 'PUT',  
+        headers: {
+          'Content-Type': 'application/json',
+          'auth-token':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjI4OGI2MTFhMWM4MjNhNDEzOTIzY2NkIn0sImlhdCI6MTY1MzEyNzU1MH0.a4ao-q4-xaaMv1PCDFGhl_X4m6DhyWA86LsgOTFoUgM'  
+        },
+        body: JSON.stringify({id,title,description}) 
+      })
+
+      let newNotes=JSON.parse(JSON.stringify(notes))
+      for (let index = 0; index < newNotes.length; index++) {
+        const element = newNotes[index];
+        if(element._id===id){
+          newNotes[index].title=title;
+          newNotes[index].description=description;
+          newNotes[index].tag=tag;
+          break;
+        }
+        setnotes(newNotes)
+      }
+      const json= await response.json();
+    }
 
 
     return(
-        <NoteContext.Provider value={{notes,addNote,deleteNote,editNote}}>
+        <NoteContext.Provider value={{notes,addNote,deleteNote,editNote,getNotes}}>
             {props.children}
         </NoteContext.Provider>
     )
